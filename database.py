@@ -17,8 +17,14 @@ DB_HOST = "localhost"
 DB_PORT = "5432"
 DB_NAME = "cashback_db"
 
-# Connection string for PostgreSQL using the psycopg2 driver
-SQLALCHEMY_DATABASE_URL = f"postgresql://{DB_USER}:{DB_PASS}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
+"""
+This will try to get the 'DATABASE_URL' from the cloud environment.
+If it doesn't find it, it uses your local PostgreSQL.
+"""
+SQLALCHEMY_DATABASE_URL = os.getenv(
+    "DATABASE_URL",
+    f"postgresql://{DB_USER}:{DB_PASS}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
+)
 
 # The "home base" for the actual database connection.
 engine = create_engine(SQLALCHEMY_DATABASE_URL)
