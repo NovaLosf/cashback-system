@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Cashback</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --principal_col: #243052;
+            --button: #00c5bb;
+            --white: #ffffff;
+            --bg: #f8f9fe;
+            --text-dark: #1f1f1f;
+            --text-light: #fdfdfd;
+            --success: #00c5bb;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg);
+            color: var(--text-dark);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+
+        header {
+            width: 100%;
+            max-width: 1200px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+            margin-bottom: 40px;
+            border-bottom: 1px solid rgba(108, 92, 231, 0.1);
+        }
+
+        header .logo {
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 700;
+            font-size: 24px;
+            color: var(--principal_col);
+        }
+
+        .card {
+            background: var(--white);
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(108, 92, 231, 0.05);
+            width: 100%;
+            max-width: 450px;
+            margin-bottom: 30px;
+        }
+
+        h2 {
+            font-family: 'Space Grotesk', sans-serif;
+            color: var(--text-dark);
+            margin-top: 0;
+            font-size: 22px;
+            border-left: 4px solid var(--principal_col);
+            padding-left: 15px;
+        }
+
+        label {
+            display: block;
+            margin-top: 20px;
+            font-size: 13px;
+            color: #ccc;
+            margin-bottom: 8px;
+            color: var(--principal_col);
+            font-weight: bold;
+        }
+
+        input, select, button {
+            width: 100%;
+            padding: 14px;
+            margin: 0;
+            border-radius: 8px;
+            border: 1px solid rgba(108, 92, 231, 0.1);
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+            font-size: 15px;
+        }
+
+        input:focus, select:focus {
+            outline: 2px solid var(--principal_col);
+            background-color: #f0f2f5;
+        }
+
+        select {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M10.293 3.293L6 7.586 1.707 3.293 0.293 4.707 6 10.414 11.707 4.707z' fill='%236c5ce7'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 15px center;
+        }
+
+        button {
+            background-color: var(--button);
+            color: var(--white);
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin-top: 25px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 13px;
+        }
+
+        button:hover {
+            background-color: var(--principal_col);
+            box-shadow: 0 5px 15px rgba(108, 92, 231, 0.2);
+        }
+
+        .result {
+            background-color: var(--success);
+            color: var(--text-light);
+            padding: 15px;
+            border-radius: 8px;
+            display: none;
+            margin-top: 20px;
+            border: none;
+            text-align: center;
+        }
+        .result strong { display: block; }
+        .result span { font-size: 24px; font-weight: bold; font-family: 'Space Grotesk', sans-serif;}
+
+        .history-section {
+            width: 100%;
+            max-width: 900px;
+            margin-top: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: var(--white);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(108, 92, 231, 0.03);
+        }
+
+        th, td {
+            padding: 18px;
+            text-align: left;
+            border-bottom: 1px solid rgba(108, 92, 231, 0.05);
+        }
+
+        th {
+            background-color: var(--principal_col);
+            color: var(--text-light);
+            text-transform: uppercase;
+            font-size: 11px;
+            letter-spacing: 1.5px;
+            font-weight: 600;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:hover td {
+            background-color: #f5f5f5;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo">Sistema Cashback</div>
+    </header>
+
+    <div class="card">
+        <h2>Cálculo de Cashback</h2>
+        <label>Valor da Compra (R$):</label>
+        <input type="number" id="purchaseValue" placeholder="Ex: 550.00" step="0.01">
+        
+        <label>Tipo de Cliente:</label>
+        <select id="isVip">
+            <option value="false">Normal</option>
+            <option value="true">VIP</option>
+        </select>
+
+        <button onclick="calculateCashback()">Calcular</button>
+
+        <div id="resultBox" class="result">
+            <strong>Resultado:</strong> <span id="cashbackValue"></span>
+        </div>
+    </div>
+
+    <div class="history-section">
+        <h2>Seu Histórico</h2>
+        <table id="historyTable">
+            <thead>
+                <tr>
+                    <th>Valor Compra</th>
+                    <th>Tipo</th>
+                    <th>Cashback</th>
+                    <th>Data</th>
+                </tr>
+            </thead>
+            <tbody id="historyBody">
+                </tbody>
+        </table>
+    </div>
+
+    <script>
+        const API_URL = "http://127.0.0.1:8000";
+
+        /**
+         * Fetches all transaction records from the database and 
+         * dynamically updates the history table in the UI.
+         */
+        async function loadHistory() {
+            try {
+                // Sending a GET request to the /history endpoint
+                const response = await fetch(`${API_URL}/history`);
+                const data = await response.json();
+                
+                const tableBody = document.getElementById('historyBody');
+                tableBody.innerHTML = ""; // Clear existing rows before reloading
+
+                // Iterate through each record and inject a new row into the table
+                data.forEach(record => {
+                    const row = `<tr>
+                        <td>R$ ${record.purchase_value.toFixed(2)}</td>
+                        <td>${record.customer_type}</td>
+                        <td>R$ ${record.cashback_amount.toFixed(2)}</td>
+                        <td>${new Date(record.created_at).toLocaleString('pt-BR')}</td>
+                    </tr>`;
+                    tableBody.innerHTML += row;
+                });
+            } catch (error) {
+                console.error("Erro ao carregar histórico:", error);
+            }
+        }
+
+        /**
+         * Collects user input, sends a POST request to calculate cashback,
+         * displays the result, and refreshes the history list.
+         */
+        async function calculateCashback() {
+            // Retrieves values from DOM elements
+            const purchaseValue = document.getElementById('purchaseValue').value;
+            const isVip = document.getElementById('isVip').value === "true";
+
+            // Frontend validation
+            if (!purchaseValue) {
+                alert("Por favor, insira um valor de compra.");
+                return;
+            }
+
+            // Prepares the JSON payload for the API
+            const payload = {
+                purchase_value: parseFloat(purchaseValue),
+                is_vip: isVip
+            };
+
+            try {
+                // Executes the POST request to the backend
+                const response = await fetch(`${API_URL}/calculate`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                const result = await response.json();
+
+                // Display the calculated value and show the result box
+                const resultBox = document.getElementById('resultBox');
+                document.getElementById('cashbackValue').innerText = `R$ ${result.cashback}`;
+
+                resultBox.style.display = 'block';
+
+                // Refresh the table to include the newly saved transaction
+                loadHistory();
+                
+            } catch (error) {
+                console.error("Erro ao conectar:", error);
+                alert("Erro ao conectar com a API. Verifique se o Uvicorn está rodando!");
+            }
+        }
+
+        // Event listener to populate the table as soon as the browser finishes loading the page
+        window.onload = loadHistory;
+    </script>
+</body>
+</html>
